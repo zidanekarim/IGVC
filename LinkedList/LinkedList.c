@@ -17,9 +17,7 @@ typedef struct list_s {
 // functions to implement
 list_t *list_alloc(void) {
     list_t *list = malloc(sizeof(list_t));
-    if (list == NULL) {
-        return NULL;
-    }
+    if (list == NULL) return NULL;
     list->head = NULL;
     list->tail = NULL;
     list->size = 0;
@@ -28,7 +26,7 @@ list_t *list_alloc(void) {
 
 void list_free(list_t *list) {
     node_t* walker = NULL;
-    while (list->head != NULL) {
+    while (list->head != NULL && list->size > 0) {
         walker = list->head;
         list->head = list->head->next;
         free(walker);
@@ -44,6 +42,9 @@ int list_prepend(list_t *list, int val) {
     new->data = val;
     new->next = list->head;
     list->head = new;
+    if (list->size == 0) list->tail = new;
+
+
     list->size++;
     if (list->head == new && list->head->data != NULL) return 0;
     return -1;
@@ -53,16 +54,38 @@ int list_prepend(list_t *list, int val) {
 int list_append(list_t *list, int val) {
     node_t *new = malloc(sizeof(node_t));
     if (new == NULL) return -1;
+
     new->next = NULL;
     new->data = val;
-    list->tail->next = new;
+
+    if (list->size == 0) list->head = new;
+     
+    if (list->size == 0) list->tail = new;
+    else {
+        list->tail->next = new;
+        list->tail = new; 
+    }
+    
+    
     list->size++;
     if (list->tail == new && list->head->data != NULL) return 0;
     return -1;
-    }
+}
 
 int list_insert(list_t *list, int val, size_t pos) {
+    if (pos == 0) {
+        return list_prepend(list, val);
+    }
+
+    if (pos == list->size) {
+        return list_append(list, val);;
+    }
+
+    if (pos > list->size) return -1;
+
     node_t* new = malloc(sizeof(node_t));
+    if (new == NULL) return -1;
+
     new->data = val;
 
     node_t* walker = list->head;
@@ -83,6 +106,8 @@ int list_insert(list_t *list, int val, size_t pos) {
 }
 
 int list_rm(list_t *list, int *val, size_t pos) {
+    
+    if (pos >= list->size) return -1;
     node_t* walker = list->head;
     int tracker = 0;
     while (walker != NULL) {
@@ -101,34 +126,37 @@ int list_rm(list_t *list, int *val, size_t pos) {
 
 
 int list_set(list_t *list, int val, size_t pos) {
+
+    if (pos >= list->size) return -1;
+    
+
     node_t* walker = list->head;
-    int tracker = 0;
-    while (walker != NULL) {
-        if (tracker == pos) { 
-            list->head->data = val;
-            return 0;
-        }
+    for (size_t i = 0; i < pos; i++) {
         walker = walker->next;
-        tracker++;
+    }
+
+    if (walker != NULL) {
+        walker->data = val;
+        return 0;
     }
     return -1;
 }
 
 
 int list_get(list_t *list, int *val, size_t pos) {
+    if (pos >= list->size) return -1;
+    
+
     node_t* walker = list->head;
-    int tracker = 0;
-    while (walker != NULL) {
-        if (tracker == pos) { 
-            *val = list->head->data;
-            return 0;
-        }
+    for (size_t i = 0; i < pos; i++) {
         walker = walker->next;
-        tracker++;
+    }
+
+    if (walker != NULL) {
+        *val = walker->data;
+        return 0;
     }
     return -1;
 }
-
-
 
 
