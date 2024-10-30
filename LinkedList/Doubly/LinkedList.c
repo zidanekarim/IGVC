@@ -27,6 +27,8 @@ list_t *list_alloc(void) {
 
 void list_free(list_t *list, void (*free_data)(void *data)) {
     node_t* walker = NULL;
+    if (list == NULL) return -1;
+
     while (list->head != NULL && list->size > 0) {
         walker = list->head;
         list->head = list->head->next;
@@ -36,11 +38,13 @@ void list_free(list_t *list, void (*free_data)(void *data)) {
     free(list);
 }
 
-void free_data(void *data) {
-    for (int i = 0; data[i] != NULL; i++) {
-        free(data[i];)
+void free_data(void* data) {
+    void** array = (void**)data;
+    for (int i = 0; array[i] != NULL; i++) {
+        free(array[i]);
     }
     free(data);
+    free(array);
 }
 
 
@@ -49,14 +53,21 @@ int list_prepend(list_t *list, int val) {
     if (new == NULL) return -1;
     
     new->data = val;
-    new->next = list->head;
+    new->next = list->head; // NULL if empty
+    if (list->size != 0 && list->tail != NULL) {
+        list->tail->next = new;
+        new->prev = list->tail; 
+    }
+    else {
+        new->prev = NULL;
+        list->tail = new;
+    }
+
     list->head = new;
-    if (list->size == 0) list->tail = new;
-    list->
+
 
     list->size++;
-    if (list->head == new && list->head->data != NULL) return 0;
-    return -1;
+    return 0;
     }
 
 
@@ -64,21 +75,21 @@ int list_append(list_t *list, int val) {
     node_t *new = malloc(sizeof(node_t));
     if (new == NULL) return -1;
 
-    new->next = NULL;
     new->data = val;
-
-    if (list->size == 0) list->head = new;
-     
-    if (list->size == 0) list->tail = new;
-    else {
+    new->next = list->head; // NULL if empty
+    if (list->size != 0) {
         list->tail->next = new;
-        list->tail = new; 
+        new->prev = list->tail;
     }
-    
+    else {
+        new->prev = NULL;
+        list->head = new;
+    }
+
+    list->tail = new; 
     
     list->size++;
-    if (list->tail == new && list->head->data != NULL) return 0;
-    return -1;
+    return 0;
 }
 
 int list_insert(list_t *list, int val, size_t pos) {
@@ -103,10 +114,12 @@ int list_insert(list_t *list, int val, size_t pos) {
         if (tracker+1 == pos) { // if the current node should point to inserted value
             new->next = walker->next;
             walker->next = new;
+            new->prev = walker;
+            walker->next->prev = new; 
             list->size++;
             return 0;
-            
         }
+
         walker = walker->next;
         tracker++;
 
