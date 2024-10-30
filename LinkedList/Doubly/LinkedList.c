@@ -47,7 +47,7 @@ void free_data(void* data) {
 }
 
 
-int list_prepend(list_t *list, int *val) {
+int list_prepend(list_t *list, int **val) {
     node_t *new = malloc(sizeof(node_t));
     if (new == NULL) return -1;
     
@@ -70,7 +70,7 @@ int list_prepend(list_t *list, int *val) {
     }
 
 
-int list_append(list_t *list, int* val) {
+int list_append(list_t *list, int** val) {
     node_t *new = malloc(sizeof(node_t));
     if (new == NULL) return -1;
 
@@ -91,7 +91,7 @@ int list_append(list_t *list, int* val) {
     return 0;
 }
 
-int list_insert(list_t *list, int *val, size_t pos) {
+int list_insert(list_t *list, int **val, size_t pos) {
     if (pos == 0) {
         return list_prepend(list, val);
     }
@@ -130,7 +130,8 @@ int list_insert(list_t *list, int *val, size_t pos) {
         for (size_t i = 0; i < pos; i++) {
             walker = walker->next;
         }
-    } else {
+    } 
+    else {
         walker = list->tail;
         for (size_t i = list->size - 1; i > pos; i--) {
             walker = walker->prev;
@@ -149,7 +150,7 @@ int list_insert(list_t *list, int *val, size_t pos) {
     return -1;
 }
 
-int list_rm(list_t *list, int *val, size_t pos) {
+int list_rm(list_t *list, int **val, size_t pos) {
     
     if (pos >= list->size) return -1;
     node_t* walker;
@@ -170,7 +171,8 @@ int list_rm(list_t *list, int *val, size_t pos) {
         for (size_t i = 0; i < pos; i++) {
             walker = walker->next;
         }
-    } else {
+    } 
+    else {
         walker = list->tail;
         for (size_t i = list->size - 1; i > pos; i--) {
             walker = walker->prev;
@@ -191,7 +193,7 @@ int list_rm(list_t *list, int *val, size_t pos) {
 
 
 
-int list_set(list_t *list, int* val, size_t pos) {
+int list_set(list_t *list, int** val, size_t pos) {
 
 
     if (pos >= list->size && pos != 0) return -1;
@@ -212,7 +214,8 @@ int list_set(list_t *list, int* val, size_t pos) {
         for (size_t i = 0; i < pos; i++) {
             walker = walker->next;
         }
-    } else {
+    } 
+    else {
         walker = list->tail;
         for (size_t i = list->size - 1; i > pos; i--) {
             walker = walker->prev;
@@ -227,7 +230,7 @@ int list_set(list_t *list, int* val, size_t pos) {
 }
 
 
-int list_get(list_t *list, int *val, size_t pos) {
+int list_get(list_t *list, int **val, size_t pos) {
     if (pos >= list->size) return -1;
 
     node_t* walker;
@@ -236,7 +239,8 @@ int list_get(list_t *list, int *val, size_t pos) {
         for (size_t i = 0; i < pos; i++) {
             walker = walker->next;
         }
-    } else {
+    } 
+    else {
         walker = list->tail;
         for (size_t i = list->size - 1; i > pos; i--) {
             walker = walker->prev;
