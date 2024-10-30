@@ -31,10 +31,20 @@ void list_free(list_t *list, void (*free_data)(void *data)) {
 
     while (list->head != NULL && list->size > 0) {
         walker = list->head;
-        list->head = list->head->next;
+        if (walker->next != NULL) {
+            list->head = walker->next;
+            list->head->prev = NULL;
+        }
+        else {
+            list->head = NULL;
+            list->tail = NULL;
+        }
         free_data(walker->data);
         free(walker);
+        list->size--;
+
     }
+    printf("List freed\n");
     free(list);
 }
 
@@ -42,9 +52,7 @@ void free_data(void* data) {
     void** array = (void**)data;
     for (int i = 0; i<3; i++) {
         free(array[i]);
-        printf("freed\n");
     }
-    printf("freed done\n");
     free(data);
 }
 
@@ -186,6 +194,7 @@ int list_rm(list_t *list, int **val, size_t pos) {
         walker->prev->next = walker->next;
         walker->next->prev = walker->prev;
         free(walker);
+        list->size--;
         return 0;
     }
 
