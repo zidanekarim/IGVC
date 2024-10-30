@@ -137,7 +137,8 @@ int list_rm(list_t *list, int *val, size_t pos) {
             *val = walker->next->data;
             node_t* remove = walker->next;
             walker->next = walker->next->next;
-            free(remove);
+            walker->next->prev = walker;
+            free_data(remove);
             return 0;
         }
         walker = walker->next;
