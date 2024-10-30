@@ -44,11 +44,10 @@ void free_data(void* data) {
         free(array[i]);
     }
     free(data);
-    free(array);
 }
 
 
-int list_prepend(list_t *list, int val) {
+int list_prepend(list_t *list, int *val) {
     node_t *new = malloc(sizeof(node_t));
     if (new == NULL) return -1;
     
@@ -71,7 +70,7 @@ int list_prepend(list_t *list, int val) {
     }
 
 
-int list_append(list_t *list, int val) {
+int list_append(list_t *list, int* val) {
     node_t *new = malloc(sizeof(node_t));
     if (new == NULL) return -1;
 
@@ -92,7 +91,7 @@ int list_append(list_t *list, int val) {
     return 0;
 }
 
-int list_insert(list_t *list, int val, size_t pos) {
+int list_insert(list_t *list, int *val, size_t pos) {
     if (pos == 0) {
         return list_prepend(list, val);
     }
@@ -133,12 +132,12 @@ int list_rm(list_t *list, int *val, size_t pos) {
     node_t* walker = list->head;
     int tracker = 0;
     while (walker != NULL) {
-        if (tracker+1 == pos) { 
-            *val = walker->next->data;
+        if (tracker+1 == pos && walker->next != NULL) { 
+            val = walker->next->data;
             node_t* remove = walker->next;
             walker->next = walker->next->next;
             walker->next->prev = walker;
-            free_data(remove);
+            free(remove);
             return 0;
         }
         walker = walker->next;
@@ -150,7 +149,7 @@ int list_rm(list_t *list, int *val, size_t pos) {
 
 
 
-int list_set(list_t *list, int val, size_t pos) {
+int list_set(list_t *list, int* val, size_t pos) {
 
 
     if (pos >= list->size && pos != 0) return -1;
@@ -203,7 +202,7 @@ int list_get(list_t *list, int *val, size_t pos) {
     }
 
     if (walker != NULL) {
-        *val = walker->data;
+        val = walker->data;
         return 0;
     }
     return -1;
