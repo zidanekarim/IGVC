@@ -129,7 +129,16 @@ int list_rm(list_t *list, int *val, size_t pos) {
 
 int list_set(list_t *list, int val, size_t pos) {
 
-    if (pos >= list->size) return -1;
+    if (pos >= list->size && pos != 0) return -1;
+    if (pos == 0 && list->size == 0) {
+        node_t *new = malloc(sizeof(node_t));
+        if (new == NULL) return -1;
+        new->data = val;
+        new->next = NULL;
+        list->head = new;
+        list->tail = new;
+        return 0;
+    }
     
 
     node_t* walker = list->head;
