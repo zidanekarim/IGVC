@@ -40,9 +40,11 @@ void list_free(list_t *list, void (*free_data)(void *data)) {
 
 void free_data(void* data) {
     void** array = (void**)data;
-    for (int i = 0; array[i] != NULL; i++) {
+    for (int i = 0; i<3; i++) {
         free(array[i]);
+        printf("freed\n");
     }
+    printf("freed done\n");
     free(data);
 }
 

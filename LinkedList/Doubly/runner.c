@@ -40,8 +40,8 @@ int main() {
     list_free(list, free_data);
     printf("List freed\n");
 
-    
 
+    
 
 
 
