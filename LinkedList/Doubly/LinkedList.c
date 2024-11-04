@@ -118,23 +118,6 @@ int list_insert(list_t *list, int **val, size_t pos) {
 
     new->data = val;
 
-    // node_t* walker = list->head;
-    // int tracker = 0;
-    // while (walker != NULL) {
-    //     if (tracker+1 == pos) { // if the current node should point to inserted value
-    //         new->next = walker->next;
-    //         walker->next = new;
-    //         new->prev = walker;
-    //         walker->next->prev = new; 
-    //         list->size++;
-    //         return 0;
-    //     }
-
-    //     walker = walker->next;
-    //     tracker++;
-
-    // }
-
     node_t* walker;
     if (pos < list->size / 2) {
         walker = list->head;
@@ -165,18 +148,6 @@ int list_rm(list_t *list, int **val, size_t pos) {
     
     if (pos >= list->size) return -1;
     node_t* walker;
-    // while (walker != NULL) {
-    //     if (tracker+1 == pos && walker->next != NULL) { 
-    //         val = walker->next->data;
-    //         node_t* remove = walker->next;
-    //         walker->next = walker->next->next;
-    //         walker->next->prev = walker;
-    //         free(remove);
-    //         return 0;
-    //     }
-    //     walker = walker->next;
-    //     tracker++;
-    // }
     if (pos < list->size / 2) {
         walker = list->head;
         for (size_t i = 0; i < pos; i++) {
