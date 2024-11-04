@@ -77,9 +77,10 @@ int main() {
 
     int** dummy_val;
     int val5 = list_get(list2, dummy_val, 1);
-    printf("Matrix4: %d %d %d\n", dummy_val[0][0], dummy_val[0][1], dummy_val[0][2]);
-    printf("Matrix4: %d %d %d\n", dummy_val[1][0], dummy_val[1][1], dummy_val[1][2]);
-    printf("Matrix4: %d %d %d\n", dummy_val[2][0], dummy_val[2][1], dummy_val[2][2]);
+    printf("\nVal 5: %d\n", val5);
+    // printf("Matrix4: %d %d %d\n", dummy_val[0][0], dummy_val[0][1], dummy_val[0][2]);
+    // printf("Matrix4: %d %d %d\n", dummy_val[1][0], dummy_val[1][1], dummy_val[1][2]);
+    // printf("Matrix4: %d %d %d\n", dummy_val[2][0], dummy_val[2][1], dummy_val[2][2]);
 
     list_free(list2, free_data);
     printf("List freed\n");

@@ -66,6 +66,7 @@ int list_prepend(list_t *list, int **val) {
 
     if (list->size == 0) {
         list->head = new;
+        list->size++;
         return 0;
     }
 
@@ -96,6 +97,7 @@ int list_append(list_t *list, int** val) {
     if (val == NULL) return -1;
     if (list->size == 0) {
         list->tail = new;
+        list->size++;
         return 0;
     }
     new->next = list->head; // NULL if empty
@@ -227,18 +229,20 @@ int list_set(list_t *list, int** val, size_t pos) {
 
 int list_get(list_t *list, int **val, size_t pos) {
     if (pos >= list->size) return -1;
-
+    printf("HELLO!!!");
     node_t* walker;
     if (pos < list->size / 2) {
         walker = list->head;
         for (size_t i = 0; i < pos; i++) {
             walker = walker->next;
+            printf("Walker: %d\n", walker->data);
         }
     } 
     else {
         walker = list->tail;
         for (size_t i = list->size - 1; i > pos; i--) {
             walker = walker->prev;
+            printf("Walker: %d\n", walker->data);
         }
     }
 
