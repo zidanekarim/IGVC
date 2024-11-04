@@ -63,6 +63,7 @@ int list_prepend(list_t *list, int **val) {
     
     new->data = val;
     new->next = list->head; // NULL if empty
+    list->head->prev = new;
     if (list->size != 0 && list->tail != NULL) {
         list->tail->next = new;
         new->prev = list->tail; 
@@ -77,7 +78,7 @@ int list_prepend(list_t *list, int **val) {
 
     list->size++;
     return 0;
-    }
+}
 
 
 int list_append(list_t *list, int** val) {
