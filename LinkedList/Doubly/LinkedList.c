@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stddef.h>
+#include <stdio.h>
 
 typedef struct node_s {
     void *data;
@@ -44,7 +45,6 @@ void list_free(list_t *list, void (*free_data)(void *data)) {
         list->size--;
 
     }
-    printf("List freed\n");
     free(list);
 }
 
@@ -62,15 +62,22 @@ int list_prepend(list_t *list, int **val) {
     if (new == NULL) return -1;
     
     new->data = val;
+    if (val == NULL) return -1;
+
+    if (list->size == 0) {
+        list->head = new;
+        return 0;
+    }
+
     new->next = list->head; // NULL if empty
     list->head->prev = new;
     if (list->size != 0 && list->tail != NULL) {
         list->tail->next = new;
         new->prev = list->tail; 
+        new->next = list->head;
     }
     else {
         new->prev = NULL;
-        list->tail = new;
     }
 
     list->head = new;
@@ -86,6 +93,11 @@ int list_append(list_t *list, int** val) {
     if (new == NULL) return -1;
 
     new->data = val;
+    if (val == NULL) return -1;
+    if (list->size == 0) {
+        list->tail = new;
+        return 0;
+    }
     new->next = list->head; // NULL if empty
     if (list->size != 0) {
         list->tail->next = new;
@@ -93,7 +105,7 @@ int list_append(list_t *list, int** val) {
     }
     else {
         new->prev = NULL;
-        list->head = new;
+        list->head->prev = new;
     }
 
     list->tail = new; 
@@ -232,6 +244,9 @@ int list_get(list_t *list, int **val, size_t pos) {
 
     if (walker != NULL) {
         val = walker->data;
+        printf("Matrix4: %d %d %d\n", val[0][0], val[0][1], val[0][2]);
+        printf("Matrix4: %d %d %d\n", val[1][0], val[1][1], val[1][2]);
+        printf("Matrix4: %d %d %d\n", val[2][0], val[2][1], val[2][2]);
         return 0;
     }
     return -1;
