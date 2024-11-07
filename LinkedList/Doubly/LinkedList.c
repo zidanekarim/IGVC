@@ -229,7 +229,7 @@ int list_get(list_t *list, int **val, size_t pos) {
     }
 
     if (walker != NULL) {
-        val = walker->data;
+        *val = (int **)walker->data;
         return 0;
     }
     return -1;
