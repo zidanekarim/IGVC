@@ -1,6 +1,7 @@
 #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
 
+#include <stddef.h>
 
 typedef struct node_s {
     void *data;

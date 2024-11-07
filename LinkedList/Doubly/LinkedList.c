@@ -60,78 +60,64 @@ void free_data(void* data) {
 int list_prepend(list_t *list, int **val) {
     node_t *new = malloc(sizeof(node_t));
     if (new == NULL) return -1;
-    
     new->data = val;
-    if (val == NULL) return -1;
-
     if (list->size == 0) {
         list->head = new;
+        list->tail = new;
+        new->next = NULL;
+        new->prev = NULL;
         list->size++;
         return 0;
     }
-
-    new->next = list->head; // NULL if empty
-    list->head->prev = new;
-    if (list->size != 0 && list->tail != NULL) {
-        list->tail->next = new;
-        new->prev = list->tail; 
-        new->next = list->head;
-    }
     else {
+        new->next = list->head;
+        list->head->prev = new;
+        list->head = new;
         new->prev = NULL;
+        list->size++;
+        return 0;
     }
-
-    list->head = new;
-
-
-    list->size++;
-    return 0;
+    
+    return -1;
+    
 }
-
 
 int list_append(list_t *list, int** val) {
     node_t *new = malloc(sizeof(node_t));
     if (new == NULL) return -1;
-
     new->data = val;
-    if (val == NULL) return -1;
     if (list->size == 0) {
         list->tail = new;
+        list->head = new;
+        new->next = NULL;
+        new->prev = NULL;
         list->size++;
         return 0;
     }
-    new->next = list->head; // NULL if empty
-    if (list->size != 0) {
-        list->tail->next = new;
-        new->prev = list->tail;
-    }
     else {
-        new->prev = NULL;
-        list->head->prev = new;
+        new->prev = list->tail;
+        list->tail->next = new;
+        list->tail = new;
+        new->next = NULL;
+        list->size++;
+        return 0;
     }
-
-    list->tail = new; 
     
-    list->size++;
-    return 0;
+    return -1;
+    
 }
 
 int list_insert(list_t *list, int **val, size_t pos) {
-    if (pos == 0) {
-        return list_prepend(list, val);
-    }
-
-    if (pos == list->size) {
-        return list_append(list, val);;
-    }
-
     if (pos > list->size) return -1;
+    if (pos == 0) list_append(list, val);
+    if (pos == list->size) list_append(list, val);
 
-    node_t* new = malloc(sizeof(node_t));
+
+    node_t *new = malloc(sizeof(node_t));
+
+
     if (new == NULL) return -1;
-
     new->data = val;
-
     node_t* walker;
     if (pos < list->size / 2) {
         walker = list->head;
@@ -147,64 +133,61 @@ int list_insert(list_t *list, int **val, size_t pos) {
     }
 
     if (walker != NULL) {
-        new->next = walker->next;
-        walker->next = new;
-        new->prev = walker;
-        walker->next->prev = new; 
+        new->next = walker;
+        new->prev = walker->prev;
+        walker->prev->next = new;
+        walker->prev = new;
         list->size++;
         return 0;
+    
     }
-
     return -1;
 }
 
 int list_rm(list_t *list, int **val, size_t pos) {
-    
     if (pos >= list->size) return -1;
     node_t* walker;
     if (pos < list->size / 2) {
         walker = list->head;
         for (size_t i = 0; i < pos; i++) {
             walker = walker->next;
+            //printf("Walker: %d\n", walker->data);
         }
     } 
     else {
         walker = list->tail;
         for (size_t i = list->size - 1; i > pos; i--) {
             walker = walker->prev;
+            //printf("Walker: %d\n", walker->data);
         }
     }
 
     if (walker != NULL) {
+        if (walker->prev != NULL) {
+            walker->prev->next = walker->next;
+        }
+        else {
+            list->head = walker->next;
+        }
+        if (walker->next != NULL) {
+            walker->next->prev = walker->prev;
+        }
+        else {
+            list->tail = walker->prev;
+        }
         val = walker->data;
-        walker->prev->next = walker->next;
-        walker->next->prev = walker->prev;
-        free(walker);
         list->size--;
         return 0;
     }
-
     return -1;
+    
 }
 
 
 
 
 int list_set(list_t *list, int** val, size_t pos) {
-
-
-    if (pos >= list->size && pos != 0) return -1;
-    if (pos == 0 && list->size == 0) {
-        node_t *new = malloc(sizeof(node_t));
-        if (new == NULL) return -1;
-        new->data = val;
-        new->next = NULL;
-        new->prev = NULL;
-        list->head = new;
-        list->tail = new;
-        return 0;
-    }
-
+    if (pos >= list->size) return -1;
     node_t* walker;
     if (pos < list->size / 2) {
         walker = list->head;
@@ -223,34 +206,30 @@ int list_set(list_t *list, int** val, size_t pos) {
         walker->data = val;
         return 0;
     }
-    return -1;
+    return -1;  
 }
 
 
 int list_get(list_t *list, int **val, size_t pos) {
     if (pos >= list->size) return -1;
-    printf("HELLO!!!");
     node_t* walker;
     if (pos < list->size / 2) {
         walker = list->head;
         for (size_t i = 0; i < pos; i++) {
             walker = walker->next;
-            printf("Walker: %d\n", walker->data);
+            //printf("Walker: %d\n", walker->data);
         }
     } 
     else {
         walker = list->tail;
         for (size_t i = list->size - 1; i > pos; i--) {
             walker = walker->prev;
-            printf("Walker: %d\n", walker->data);
+            //printf("Walker: %d\n", walker->data);
         }
     }
 
     if (walker != NULL) {
         val = walker->data;
-        printf("Matrix4: %d %d %d\n", val[0][0], val[0][1], val[0][2]);
-        printf("Matrix4: %d %d %d\n", val[1][0], val[1][1], val[1][2]);
-        printf("Matrix4: %d %d %d\n", val[2][0], val[2][1], val[2][2]);
         return 0;
     }
     return -1;

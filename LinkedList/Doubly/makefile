@@ -1,11 +1,19 @@
+CC = gcc
+CFLAGS = -g -Wall -w
+
+%.o: %.c &.h
+	$(CC) $(CFLAGS) -c $^
+
+
 default:	compile
 compile runner: runner.o LinkedList.o
-	@gcc -o runner.out runner.o LinkedList.o 
+	@$(CC) $(CFLAGS) -o $@ $^
 runner.o: runner.c LinkedList.h
-	@gcc -w -c runner.c
+	@$(CC) $(CFLAGS) -w -c $^
 LinekdList.o: LinkedList.c LinkedList.h
-	@gcc -w -c LinkedList.c
+	@$(CC) $(CFLAGS) -c $^
 run: runner
-	@./runner.out
+	@./runner
+.PHONY: clean
 clean:
 	rm -f *.o runner.out
